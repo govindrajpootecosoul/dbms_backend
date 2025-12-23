@@ -14,8 +14,24 @@ dotenv.config();
 
 const app = express();
 
+// CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN,
+  'https://dbms-frontend-eta.vercel.app',
+  'http://localhost:5173',
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+);
+// Explicitly handle preflight
+app.options('*', cors());
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
