@@ -1,3 +1,10 @@
+import app, { ensureDBConnection } from '../app.js';
+
+// Ensure database is connected on cold start before handling requests
+await ensureDBConnection();
+
+// Export the Express app for Vercel's serverless runtime
+export default app;
 import express from 'express';
 import cors from 'cors';
 import connectDB from '../config/db.js';
