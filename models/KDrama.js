@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const kdramaSchema = new mongoose.Schema({
   user: {
@@ -52,5 +52,5 @@ kdramaSchema.pre('save', function(next) {
 
 const KDrama = mongoose.model('KDrama', kdramaSchema);
 
-export default KDrama;
+module.exports = KDrama;
 

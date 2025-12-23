@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const animeSchema = new mongoose.Schema({
   user: {
@@ -79,5 +79,5 @@ animeSchema.pre('save', function(next) {
 // If you want a different collection name, use: mongoose.model('Anime', animeSchema, 'anime');
 const Anime = mongoose.model('Anime', animeSchema);
 
-export default Anime;
+module.exports = Anime;
 

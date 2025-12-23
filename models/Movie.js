@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema({
   user: {
@@ -54,5 +54,5 @@ movieSchema.pre('save', function(next) {
 
 const Movie = mongoose.model('Movie', movieSchema);
 
-export default Movie;
+module.exports = Movie;
 

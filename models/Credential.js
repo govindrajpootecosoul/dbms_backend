@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const credentialSchema = new mongoose.Schema({
   user: {
@@ -43,5 +43,5 @@ credentialSchema.pre('save', function(next) {
 
 const Credential = mongoose.model('Credential', credentialSchema);
 
-export default Credential;
+module.exports = Credential;
 

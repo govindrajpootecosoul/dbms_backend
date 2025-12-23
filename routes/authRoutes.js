@@ -1,7 +1,7 @@
-import express from 'express';
-import User from '../models/User.js';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+const express = require('express');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -151,5 +151,5 @@ router.post('/login', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
 

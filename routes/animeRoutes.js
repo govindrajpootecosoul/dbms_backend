@@ -1,6 +1,6 @@
-import express from 'express';
-import Anime from '../models/Anime.js';
-import { protect } from '../middleware/auth.js';
+const express = require('express');
+const Anime = require('../models/Anime');
+const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -145,5 +145,5 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
 

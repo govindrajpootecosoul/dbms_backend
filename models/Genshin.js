@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const genshinSchema = new mongoose.Schema({
   user: {
@@ -88,5 +88,5 @@ genshinSchema.pre('save', function(next) {
 
 const Genshin = mongoose.model('Genshin', genshinSchema);
 
-export default Genshin;
+module.exports = Genshin;
 

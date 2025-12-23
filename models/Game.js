@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const gameSchema = new mongoose.Schema({
   user: {
@@ -50,5 +50,5 @@ gameSchema.pre('save', function(next) {
 
 const Game = mongoose.model('Game', gameSchema);
 
-export default Game;
+module.exports = Game;
 

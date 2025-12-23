@@ -1,6 +1,6 @@
-import express from 'express';
-import Movie from '../models/Movie.js';
-import { protect } from '../middleware/auth.js';
+const express = require('express');
+const Movie = require('../models/Movie');
+const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -138,5 +138,5 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
 

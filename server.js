@@ -1,19 +1,13 @@
-import app, { ensureDBConnection } from './app.js';
+const app = require('./api/index');
+const { ensureDBConnection } = require('./api/index');
 
-const PORT = process.env.PORT || 5012;
+const PORT = process.env.PORT || 5000;
 
-// Start server only after database connection is established
 const startServer = async () => {
   try {
     await ensureDBConnection();
-
-    // Avoid binding a port on Vercel (serverless)
-    if (process.env.VERCEL === '1') {
-      return;
-    }
-
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`Local server running on ${PORT}`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
@@ -22,6 +16,4 @@ const startServer = async () => {
 };
 
 startServer();
-
-export default app;
 
