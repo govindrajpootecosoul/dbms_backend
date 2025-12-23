@@ -47,24 +47,29 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
-  const requestOrigin = req.headers.origin;
-  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
-    res.header('Access-Control-Allow-Origin', requestOrigin);
-    res.header('Vary', 'Origin');
+  try {
+    const requestOrigin = req.headers.origin;
+    if (requestOrigin && (explicitOrigins.includes(requestOrigin) || isLocalhost(requestOrigin))) {
+      res.header('Access-Control-Allow-Origin', requestOrigin);
+      res.header('Vary', 'Origin');
+    }
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-Requested-With, Accept, Origin'
+    );
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    );
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(204);
+    }
+    next();
+  } catch (error) {
+    console.error('CORS middleware error:', error);
+    next();
   }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, X-Requested-With, Accept, Origin'
-  );
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-  );
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  next();
 });
 
 app.use(express.json());
@@ -95,6 +100,32 @@ const ensureDBConnection = async () => {
   }
   return dbConnectionPromise;
 };
+
+// 404 handler - must return JSON
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.path
+  });
+});
+
+// Global error handler - ensure all errors return JSON
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  
+  // Don't send response if headers already sent
+  if (res.headersSent) {
+    return next(err);
+  }
+  
+  // Always return JSON, never HTML
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal server error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+});
 
 module.exports = app;
 module.exports.ensureDBConnection = ensureDBConnection;
