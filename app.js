@@ -21,21 +21,59 @@ const allowedOrigins = [
   'http://localhost:5173',
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  })
-);
-// Explicitly handle preflight
-app.options('*', cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow same-origin (no origin header) and known origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+  ],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+// Manual headers fallback to ensure every response carries CORS headers
+app.use((req, res, next) => {
+  const requestOrigin = req.headers.origin;
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    res.header('Access-Control-Allow-Origin', requestOrigin);
+    res.header('Vary', 'Origin');
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-Requested-With, Accept, Origin'
+  );
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+  );
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('DBMS backend is running. Use /api/* endpoints.');
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/anime', animeRoutes);
 app.use('/api/genshin', genshinRoutes);
@@ -48,6 +86,9 @@ app.use('/api/movies', movieRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Server is running' });
 });
+
+// Fallback for favicon to reduce noise
+app.get('/favicon.ico', (req, res) => res.sendStatus(204));
 
 // Ensure DB connects only once (works for serverless cold starts)
 let dbConnectionPromise;
