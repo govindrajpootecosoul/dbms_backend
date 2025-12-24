@@ -51,8 +51,20 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    // Validate required fields
+    if (!req.body.title) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title is required'
+      });
+    }
+
     const gameData = {
-      ...req.body,
+      title: req.body.title,
+      platform: req.body.platform || 'PC',
+      status: req.body.status || 'Plan to Play',
+      rating: req.body.rating || 0,
+      image: req.body.image || '🎮',
       user: req.user._id
     };
 

@@ -51,8 +51,31 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    // Validate required fields
+    if (!req.body.service) {
+      return res.status(400).json({
+        success: false,
+        message: 'Service name is required'
+      });
+    }
+    if (!req.body.username) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username is required'
+      });
+    }
+    if (!req.body.password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password is required'
+      });
+    }
+
     const credentialData = {
-      ...req.body,
+      service: req.body.service,
+      username: req.body.username,
+      password: req.body.password,
+      category: req.body.category || 'Other',
       user: req.user._id
     };
 

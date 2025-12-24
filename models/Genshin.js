@@ -13,7 +13,7 @@ const genshinSchema = new mongoose.Schema({
   },
   element: {
     type: String,
-    enum: ['Electro', 'Geo', 'Pyro', 'Cryo', 'Hydro', 'Anemo', 'Dendro'],
+    enum: ['Electro', 'Geo', 'Pyro', 'Cryo', 'Cyro', 'Hydro', 'Anemo', 'Dendro'],
     required: true,
     default: 'Anemo'
   },
@@ -56,6 +56,16 @@ const genshinSchema = new mongoose.Schema({
     default: ''
   },
   weapon: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  rating: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  levelType: {
     type: String,
     trim: true,
     default: ''
